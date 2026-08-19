@@ -1,0 +1,23 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // デフォルトはすべて拒否
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // クラス配下の生徒データ
+    // 書き込み・読み取りはすべて Admin SDK（サーバー側）経由のみ許可
+    // クライアントからの直接アクセスを禁止してセキュリティを強化
+    match /classes/{classId}/students/{studentId} {
+      allow read, write: if false;
+    }
+
+    // 将来的にメタデータなどを追加する場合の例
+    match /meta/{docId} {
+      allow read: if false;
+      allow write: if false;
+    }
+  }
+}
